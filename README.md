@@ -28,7 +28,8 @@ src/
  │    │         └── service/
  │    │               ├── OrgChartBuilder.java
  │    │               ├── SalaryAnalyzer.java
- │    │               └── ReportingLineAnalyzer.java
+ │    │               ├── ReportingLineAnalyzer.java
+ │    │               └── Analyzer.java
  │    └── resources/employees.csv
  └── test/java/com/bigcompany/
       ├── EmployeeCsvParserTest.java
@@ -88,6 +89,26 @@ Run tests:
 ```
 mvn test
 ```
+
+---
+
+## Code Formatting
+
+This project uses [Google Java Format](https://github.com/google/google-java-format) to maintain a consistent code style. Formatting is enforced via the `fmt-maven-plugin`.
+
+To reformat the entire project, run:
+
+```
+mvn fmt:format
+```
+
+---
+
+## Robustness & Error Handling
+
+- **CSV Validation**: The parser validates for minimum required columns per row.
+- **Detailed Error Messages**: If a CEO is not found, the application logs all available employee IDs to assist in diagnosing broken hierarchies.
+- **Reporting Line Integrity**: Detects and reports if an employee references a manager ID that does not exist in the dataset.
 
 ---
 
