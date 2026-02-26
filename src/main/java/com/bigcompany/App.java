@@ -1,11 +1,11 @@
 package com.bigcompany;
 
 import com.bigcompany.model.Employee;
-import com.bigcompany.parser.EmployeeCsvParser;
+import com.bigcompany.repository.CsvEmployeeRepository;
+import com.bigcompany.repository.EmployeeRepository;
 import com.bigcompany.service.OrgChartBuilder;
 import com.bigcompany.service.ReportingLineAnalyzer;
 import com.bigcompany.service.SalaryAnalyzer;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,9 +34,9 @@ public class App {
     }
   }
 
-  private static List<Employee> loadEmployees(String filePath) throws IOException {
-    EmployeeCsvParser parser = new EmployeeCsvParser();
-    return parser.parse(filePath);
+  private static List<Employee> loadEmployees(String filePath) {
+    EmployeeRepository repository = new CsvEmployeeRepository(filePath);
+    return repository.findAll();
   }
 
   private static Employee buildOrgChart(List<Employee> employees) {
@@ -76,7 +76,14 @@ public class App {
     }
 
     for (ReportingLineAnalyzer.DepthViolation v : violations) {
-      log.info(() -> String.format("Employee ID %d depth=%d", v.employee().getId(), v.depth()));
+      log.info(
+          () ->
+              String.format(
+                  "Employee %s %s (ID %d) has excessive depth of %d",
+                  v.employee().getFirstName(),
+                  v.employee().getLastName(),
+                  v.employee().getId(),
+                  v.depth()));
     }
   }
 }

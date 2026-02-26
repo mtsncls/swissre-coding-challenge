@@ -5,135 +5,45 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.bigcompany.model.Employee;
 import com.bigcompany.service.SalaryAnalyzer;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class SalaryAnalyzerTest {
 
-  @Test
-  void detectsUnderpaidManager() {
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("salaryScenarios")
+  void testSalaryAnalysis(
+      String description,
+      double managerSalary,
+      double[] subordinateSalaries,
+      int expectedViolations,
+      Boolean expectedUnderpaid,
+      Double expectedDifference) {
+
     Employee manager =
-        new Employee.Builder()
-            .id(1)
-            .firstName("Boss")
-            .lastName("Man")
-            .salary(45000)
-            .managerId(null)
-            .build();
-
-    Employee s1 =
-        new Employee.Builder()
-            .id(2)
-            .firstName("A")
-            .lastName("A")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    Employee s2 =
-        new Employee.Builder()
-            .id(3)
-            .firstName("B")
-            .lastName("B")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    manager.addSubordinate(s1);
-    manager.addSubordinate(s2);
-
+        EmployeeTestData.createManagerWithSubordinatesSalary(managerSalary, subordinateSalaries);
     SalaryAnalyzer analyzer = new SalaryAnalyzer();
     List<SalaryAnalyzer.SalaryViolation> violations = analyzer.analyze(manager);
 
-    assertEquals(1, violations.size());
-    SalaryAnalyzer.SalaryViolation v = violations.get(0);
+    assertEquals(expectedViolations, violations.size(), description);
 
-    assertTrue(v.underpaid());
-    assertEquals(manager, v.manager());
-
-    double expectedDifference = (40000 * 1.20) - 45000;
-    assertEquals(expectedDifference, v.difference(), 0.001);
+    if (expectedViolations > 0 && expectedUnderpaid != null) {
+      SalaryAnalyzer.SalaryViolation v = violations.get(0);
+      assertEquals(expectedUnderpaid, v.underpaid(), description + " (underpaid check)");
+      if (expectedDifference != null) {
+        assertEquals(
+            expectedDifference, v.difference(), 0.001, description + " (difference check)");
+      }
+    }
   }
 
-  @Test
-  void detectsOverpaidManager() {
-    Employee manager =
-        new Employee.Builder()
-            .id(1)
-            .firstName("Boss")
-            .lastName("Man")
-            .salary(100000)
-            .managerId(null)
-            .build();
-
-    Employee s1 =
-        new Employee.Builder()
-            .id(2)
-            .firstName("A")
-            .lastName("A")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    Employee s2 =
-        new Employee.Builder()
-            .id(3)
-            .firstName("B")
-            .lastName("B")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    manager.addSubordinate(s1);
-    manager.addSubordinate(s2);
-
-    SalaryAnalyzer analyzer = new SalaryAnalyzer();
-    List<SalaryAnalyzer.SalaryViolation> violations = analyzer.analyze(manager);
-
-    assertEquals(1, violations.size());
-    SalaryAnalyzer.SalaryViolation v = violations.get(0);
-
-    assertFalse(v.underpaid());
-    assertEquals(manager, v.manager());
-
-    double expectedDifference = 100000 - (40000 * 1.50);
-    assertEquals(expectedDifference, v.difference(), 0.001);
-  }
-
-  @Test
-  void noViolationWhenSalaryIsWithinRange() {
-    Employee manager =
-        new Employee.Builder()
-            .id(1)
-            .firstName("Boss")
-            .lastName("Man")
-            .salary(60000)
-            .managerId(null)
-            .build();
-
-    Employee s1 =
-        new Employee.Builder()
-            .id(2)
-            .firstName("A")
-            .lastName("A")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    Employee s2 =
-        new Employee.Builder()
-            .id(3)
-            .firstName("B")
-            .lastName("B")
-            .salary(40000)
-            .managerId(1)
-            .build();
-
-    manager.addSubordinate(s1);
-    manager.addSubordinate(s2);
-
-    SalaryAnalyzer analyzer = new SalaryAnalyzer();
-    List<SalaryAnalyzer.SalaryViolation> violations = analyzer.analyze(manager);
-
-    assertTrue(violations.isEmpty());
+  static Stream<Arguments> salaryScenarios() {
+    return Stream.of(
+        Arguments.of("Underpaid manager", 45000.0, new double[] {40000, 40000}, 1, true, 3000.0),
+        Arguments.of("Overpaid manager", 100000.0, new double[] {40000, 40000}, 1, false, 40000.0),
+        Arguments.of(
+            "Manager with correct salary", 50000.0, new double[] {40000, 40000}, 0, null, null));
   }
 }

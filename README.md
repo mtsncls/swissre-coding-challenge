@@ -24,7 +24,9 @@ src/
  │    ├── java/com/bigcompany/
  │    │         ├── App.java
  │    │         ├── model/Employee.java
- │    │         ├── parser/EmployeeCsvParser.java
+ │    │         ├── repository/
+ │    │         │     ├── EmployeeRepository.java
+ │    │         │     └── CsvEmployeeRepository.java
  │    │         └── service/
  │    │               ├── OrgChartBuilder.java
  │    │               ├── SalaryAnalyzer.java
@@ -32,10 +34,13 @@ src/
  │    │               └── Analyzer.java
  │    └── resources/employees.csv
  └── test/java/com/bigcompany/
-      ├── EmployeeCsvParserTest.java
+      ├── CsvEmployeeRepositoryTest.java
       ├── SalaryAnalyzerTest.java
       ├── ReportingLineAnalyzerTest.java
-      └── OrgChartBuilderTest.java
+      ├── OrgChartBuilderTest.java
+      ├── EmployeeTestData.java
+      ├── DeepHierarchyTest.java
+      └── HighVolumeTest.java
 ```
 
 ---
@@ -79,7 +84,7 @@ Id,firstName,lastName,salary,managerId
 
 JUnit 5 tests cover:
 
-- CSV parsing
+- Repository-based data access (EmployeeRepository)
 - Hierarchy construction
 - Salary rule evaluation
 - Reporting line depth evaluation

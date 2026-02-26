@@ -5,50 +5,35 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.bigcompany.model.Employee;
 import com.bigcompany.service.ReportingLineAnalyzer;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class ReportingLineAnalyzerTest {
 
-  @Test
-  void detectsEmployeesWithExcessiveDepth() {
-
-    Employee ceo =
-        new Employee.Builder()
-            .id(1)
-            .firstName("A")
-            .lastName("A")
-            .salary(100)
-            .managerId(null)
-            .build();
-
-    Employee e2 =
-        new Employee.Builder().id(2).firstName("B").lastName("B").salary(90).managerId(1).build();
-
-    Employee e3 =
-        new Employee.Builder().id(3).firstName("C").lastName("C").salary(80).managerId(2).build();
-
-    Employee e4 =
-        new Employee.Builder().id(4).firstName("D").lastName("D").salary(70).managerId(3).build();
-
-    Employee e5 =
-        new Employee.Builder().id(5).firstName("E").lastName("E").salary(60).managerId(4).build();
-
-    Employee e6 =
-        new Employee.Builder().id(6).firstName("F").lastName("F").salary(50).managerId(5).build();
-
-    ceo.addSubordinate(e2);
-    e2.addSubordinate(e3);
-    e3.addSubordinate(e4);
-    e4.addSubordinate(e5);
-    e5.addSubordinate(e6);
-
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("depthScenarios")
+  void testDepthAnalysis(String description, int totalEmployees, int expectedViolationCount) {
+    Employee ceo = EmployeeTestData.createLineHierarchy(totalEmployees);
     ReportingLineAnalyzer analyzer = new ReportingLineAnalyzer();
     List<ReportingLineAnalyzer.DepthViolation> violations = analyzer.analyze(ceo);
 
-    assertEquals(1, violations.size());
-    ReportingLineAnalyzer.DepthViolation v = violations.get(0);
+    assertEquals(expectedViolationCount, violations.size(), description);
 
-    assertEquals(e6, v.employee());
-    assertEquals(5, v.depth());
+    if (expectedViolationCount > 0) {
+      ReportingLineAnalyzer.DepthViolation v = violations.get(0);
+
+      assertEquals(6, v.employee().getId(), "First violating employee should be ID 6");
+      assertEquals(5, v.depth(), "Depth should be 5 for ID 6");
+    }
+  }
+
+  static Stream<Arguments> depthScenarios() {
+    return Stream.of(
+        Arguments.of("No violations at depth 3", 4, 0),
+        Arguments.of("No violations at depth 4", 5, 0),
+        Arguments.of("One violation at depth 5", 6, 1),
+        Arguments.of("Multiple violations at depth 10", 11, 6));
   }
 }
