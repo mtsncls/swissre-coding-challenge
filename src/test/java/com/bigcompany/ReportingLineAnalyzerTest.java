@@ -12,12 +12,54 @@ class ReportingLineAnalyzerTest {
 
     @Test
     void detectsEmployeesWithExcessiveDepth() {
-        Employee ceo = new Employee(1, "A", "A", 100, null);
-        Employee e2 = new Employee(2, "B", "B", 90, 1);
-        Employee e3 = new Employee(3, "C", "C", 80, 2);
-        Employee e4 = new Employee(4, "D", "D", 70, 3);
-        Employee e5 = new Employee(5, "E", "E", 60, 4);
-        Employee e6 = new Employee(6, "F", "F", 50, 5);
+
+        Employee ceo = new Employee.Builder()
+                .id(1)
+                .firstName("A")
+                .lastName("A")
+                .salary(100)
+                .managerId(null)
+                .build();
+
+        Employee e2 = new Employee.Builder()
+                .id(2)
+                .firstName("B")
+                .lastName("B")
+                .salary(90)
+                .managerId(1)
+                .build();
+
+        Employee e3 = new Employee.Builder()
+                .id(3)
+                .firstName("C")
+                .lastName("C")
+                .salary(80)
+                .managerId(2)
+                .build();
+
+        Employee e4 = new Employee.Builder()
+                .id(4)
+                .firstName("D")
+                .lastName("D")
+                .salary(70)
+                .managerId(3)
+                .build();
+
+        Employee e5 = new Employee.Builder()
+                .id(5)
+                .firstName("E")
+                .lastName("E")
+                .salary(60)
+                .managerId(4)
+                .build();
+
+        Employee e6 = new Employee.Builder()
+                .id(6)
+                .firstName("F")
+                .lastName("F")
+                .salary(50)
+                .managerId(5)
+                .build();
 
         ceo.addSubordinate(e2);
         e2.addSubordinate(e3);

@@ -12,9 +12,29 @@ class SalaryAnalyzerTest {
 
     @Test
     void detectsUnderpaidManager() {
-        Employee manager = new Employee(1, "Boss", "Man", 45000, null);
-        Employee s1 = new Employee(2, "A", "A", 40000, 1);
-        Employee s2 = new Employee(3, "B", "B", 40000, 1);
+        Employee manager = new Employee.Builder()
+                .id(1)
+                .firstName("Boss")
+                .lastName("Man")
+                .salary(45000)
+                .managerId(null)
+                .build();
+
+        Employee s1 = new Employee.Builder()
+                .id(2)
+                .firstName("A")
+                .lastName("A")
+                .salary(40000)
+                .managerId(1)
+                .build();
+
+        Employee s2 = new Employee.Builder()
+                .id(3)
+                .firstName("B")
+                .lastName("B")
+                .salary(40000)
+                .managerId(1)
+                .build();
 
         manager.addSubordinate(s1);
         manager.addSubordinate(s2);
@@ -34,9 +54,29 @@ class SalaryAnalyzerTest {
 
     @Test
     void detectsOverpaidManager() {
-        Employee manager = new Employee(1, "Boss", "Man", 100000, null);
-        Employee s1 = new Employee(2, "A", "A", 40000, 1);
-        Employee s2 = new Employee(3, "B", "B", 40000, 1);
+        Employee manager = new Employee.Builder()
+                .id(1)
+                .firstName("Boss")
+                .lastName("Man")
+                .salary(100000)
+                .managerId(null)
+                .build();
+
+        Employee s1 = new Employee.Builder()
+                .id(2)
+                .firstName("A")
+                .lastName("A")
+                .salary(40000)
+                .managerId(1)
+                .build();
+
+        Employee s2 = new Employee.Builder()
+                .id(3)
+                .firstName("B")
+                .lastName("B")
+                .salary(40000)
+                .managerId(1)
+                .build();
 
         manager.addSubordinate(s1);
         manager.addSubordinate(s2);
@@ -56,9 +96,29 @@ class SalaryAnalyzerTest {
 
     @Test
     void noViolationWhenSalaryIsWithinRange() {
-        Employee manager = new Employee(1, "Boss", "Man", 60000, null);
-        Employee s1 = new Employee(2, "A", "A", 40000, 1);
-        Employee s2 = new Employee(3, "B", "B", 40000, 1);
+        Employee manager = new Employee.Builder()
+                .id(1)
+                .firstName("Boss")
+                .lastName("Man")
+                .salary(60000)
+                .managerId(null)
+                .build();
+
+        Employee s1 = new Employee.Builder()
+                .id(2)
+                .firstName("A")
+                .lastName("A")
+                .salary(40000)
+                .managerId(1)
+                .build();
+
+        Employee s2 = new Employee.Builder()
+                .id(3)
+                .firstName("B")
+                .lastName("B")
+                .salary(40000)
+                .managerId(1)
+                .build();
 
         manager.addSubordinate(s1);
         manager.addSubordinate(s2);

@@ -29,27 +29,6 @@ public class EmployeeCsvParser {
         return employees;
     }
 
-
-    private List<Employee> readEmployees(BufferedReader reader) throws IOException {
-        List<Employee> employees = new ArrayList<>();
-
-        String line = readNextNonEmptyLine(reader);
-        if (line == null) {
-            return employees;
-        }
-
-        if (isHeader(line)) {
-            line = readNextNonEmptyLine(reader);
-        }
-
-        while (line != null) {
-            employees.add(parseEmployee(line));
-            line = readNextNonEmptyLine(reader);
-        }
-
-        return employees;
-    }
-
     private String readNextNonEmptyLine(BufferedReader reader) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -68,8 +47,8 @@ public class EmployeeCsvParser {
         String[] parts = line.split(",");
 
         int id = Integer.parseInt(parts[0].trim());
-        String first = parts[1].trim();
-        String last = parts[2].trim();
+        String firstName = parts[1].trim();
+        String lastName = parts[2].trim();
         double salary = Double.parseDouble(parts[3].trim());
 
         Integer managerId = null;
@@ -77,6 +56,12 @@ public class EmployeeCsvParser {
             managerId = Integer.parseInt(parts[4].trim());
         }
 
-        return new Employee(id, first, last, salary, managerId);
+        return new Employee.Builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .salary(salary)
+                .managerId(managerId)
+                .build();
     }
 }

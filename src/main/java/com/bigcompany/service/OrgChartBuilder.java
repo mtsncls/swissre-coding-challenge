@@ -36,7 +36,7 @@ public class OrgChartBuilder {
 
     private void attachToManager(Employee e, Map<Integer, Employee> index) {
         if (e.getManagerId() == null) {
-            return; // CEO
+            return;
         }
 
         Employee manager = index.get(e.getManagerId());

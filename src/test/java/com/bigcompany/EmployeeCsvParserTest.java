@@ -16,7 +16,11 @@ class EmployeeCsvParserTest {
     @Test
     void parsesValidCsvCorrectly() throws Exception {
         String csv =
-                "Id,firstName,lastName,salary,managerId\n" + "1,John,Doe,50000,\n" + "2,Alice,Smith,40000,1\n";
+                """
+                        Id,firstName,lastName,salary,managerId
+                        1,John,Doe,50000,
+                        2,Alice,Smith,40000,1
+                """;
 
         Path temp = Files.createTempFile("employees", ".csv");
         try (FileWriter fw = new FileWriter(temp.toFile())) {

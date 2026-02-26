@@ -12,9 +12,30 @@ class OrgChartBuilderTest {
 
     @Test
     void buildsHierarchyCorrectly() {
-        Employee ceo = new Employee(1, "CEO", "Root", 100000, null);
-        Employee m1 = new Employee(2, "Manager", "One", 80000, 1);
-        Employee e1 = new Employee(3, "Worker", "A", 50000, 2);
+
+        Employee ceo = new Employee.Builder()
+                .id(1)
+                .firstName("CEO")
+                .lastName("Root")
+                .salary(100000)
+                .managerId(null)
+                .build();
+
+        Employee m1 = new Employee.Builder()
+                .id(2)
+                .firstName("Manager")
+                .lastName("One")
+                .salary(80000)
+                .managerId(1)
+                .build();
+
+        Employee e1 = new Employee.Builder()
+                .id(3)
+                .firstName("Worker")
+                .lastName("A")
+                .salary(50000)
+                .managerId(2)
+                .build();
 
         List<Employee> employees = List.of(ceo, m1, e1);
 

@@ -74,17 +74,6 @@ Id,firstName,lastName,salary,managerId
 
 ---
 
-## Design Principles
-
-The implementation follows:
-
-- **KISS** — straightforward logic, minimal abstractions.
-- **SOLID** — each class has a single responsibility.
-- **DRY** — no duplicated parsing or traversal logic.
-- **Clean Code** — small methods, clear naming, no side effects in analyzers.
-
----
-
 ## Tests
 
 JUnit 5 tests cover:
